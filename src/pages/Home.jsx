@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { withStyles, makeStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -8,7 +8,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Drawer from "../components/Drawer";
-import { Button, Grid, Input, TextField, Typography } from "@material-ui/core";
+import { Button, Grid, TextField, Typography } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CreateIcon from "@material-ui/icons/Create";
 import { useState } from "react";
@@ -40,30 +40,35 @@ const useStyles = makeStyles({
 
 const data = [
   {
+    id: 1,
     name: "Adam",
     email: "adam@gmail.com",
     address: "Pakistan",
     contact: 2134122,
   },
   {
+    id: 2,
     name: "Jane",
     email: "jane@gmail.com",
     address: "United Kindom",
     contact: 3472312,
   },
   {
+    id: 3,
     name: "Tommy",
     email: "tommy@gmail.com",
     address: "India",
     contact: 6797432,
   },
   {
+    id: 4,
     name: "Ali",
     email: "ali@gmail.com",
     address: "USA",
     contact: 2473444,
   },
   {
+    id: 5,
     name: "Prakash",
     email: "prakash@gmail.com",
     address: "Bangladesh",
@@ -79,6 +84,7 @@ export default function CustomizedTables() {
   });
   const [newData, setNewData] = useState(data);
   const [showTextField, setShowTextField] = useState(false);
+
   const [addInput, setAddInput] = useState([
     // {
     //   name: "",
@@ -112,6 +118,34 @@ export default function CustomizedTables() {
     //  data.push(editData)
     setNewData((current) => [...current, editData]);
   };
+
+  const handleDelete = (e) => {
+    const del = newData.filter((item) => item.id !== e.id);
+    // console.log("del", del);
+    setNewData(del);
+    // setNewData((current) =>
+    //   current.filter((user) => {
+    //     return user.id !== 3;
+    //   })
+    // );
+    // console.log("delete :>> ", del);
+  };
+
+  const handleEdit = (e) => {
+    const edit = newData.filter((item) => item.id !== e.id);
+    console.log("edit :>> ", edit);
+    // setNewData(edit);
+
+    // setShowTextField(true);
+    // setAddInput([
+    //   {
+    //     name: "",
+    //     email: "",
+    //     address: "",
+    //     contact: "",
+    //   },
+    // ]);
+  };
   return (
     <Drawer>
       <Grid container rowSpacing={5}>
@@ -130,7 +164,7 @@ export default function CustomizedTables() {
               <StyledTableCell align="center">Action</StyledTableCell>
               <StyledTableCell align="center">
                 <Button variant="contained" onClick={handleAddClick}>
-                  Add
+                  Add User
                 </Button>
               </StyledTableCell>
             </TableRow>
@@ -149,11 +183,17 @@ export default function CustomizedTables() {
                     variant="container"
                     style={{ backgroundColor: "yellow", marginRight: "8px" }}
                     size="small"
+                    onClick={handleEdit(row)}
                   >
                     <CreateIcon />
                     Edit
                   </Button>
-                  <Button color="secondary" variant="contained" size="small">
+                  <Button
+                    color="secondary"
+                    variant="contained"
+                    size="small"
+                    onClick={() => handleDelete(row)}
+                  >
                     <DeleteIcon />
                     Delete
                   </Button>
@@ -165,9 +205,8 @@ export default function CustomizedTables() {
       </TableContainer>
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
-       
           <TableBody>
-            {showTextField == true
+            {showTextField === true
               ? addInput.map((item, index) => (
                   <StyledTableRow key={item.name}>
                     <StyledTableCell component="th" scope="row">
