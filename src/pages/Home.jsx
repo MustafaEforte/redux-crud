@@ -77,6 +77,7 @@ const data = [
 ];
 export default function CustomizedTables() {
   const [editData, setEditData] = useState({
+    id: "",
     name: "",
     email: "",
     address: "",
@@ -100,6 +101,7 @@ export default function CustomizedTables() {
     setShowTextField(true);
     setAddInput([
       {
+        id: "",
         name: "",
         email: "",
         address: "",
@@ -157,6 +159,7 @@ export default function CustomizedTables() {
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
             <TableRow>
+              <StyledTableCell>ID</StyledTableCell>
               <StyledTableCell>Name</StyledTableCell>
               <StyledTableCell align="center">Email</StyledTableCell>
               <StyledTableCell align="center">Address</StyledTableCell>
@@ -171,7 +174,10 @@ export default function CustomizedTables() {
           </TableHead>
           <TableBody>
             {newData.map((row) => (
-              <StyledTableRow key={row.name}>
+              <StyledTableRow key={row.id}>
+                <StyledTableCell component="th" scope="row">
+                  {row.id}
+                </StyledTableCell>
                 <StyledTableCell component="th" scope="row">
                   {row.name}
                 </StyledTableCell>
@@ -208,11 +214,20 @@ export default function CustomizedTables() {
           <TableBody>
             {showTextField === true
               ? addInput.map((item, index) => (
-                  <StyledTableRow key={item.name}>
+                  <StyledTableRow key={item.id}>
+                    <StyledTableCell component="th" scope="row" align="center">
+                      <TextField
+                        id="standard-basic"
+                        label={Object.keys(item)[index]}
+                        onChange={handleChange}
+                        name="id"
+                        
+                      />
+                    </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
                       <TextField
                         id="standard-basic"
-                        label={Object.keys(item)[0]}
+                        label={Object.keys(item)[index + 1]}
                         onChange={handleChange}
                         name="name"
                       />
@@ -220,7 +235,7 @@ export default function CustomizedTables() {
                     <StyledTableCell component="th" scope="row" align="center">
                       <TextField
                         id="standard-basic"
-                        label={Object.keys(item)[index + 1]}
+                        label={Object.keys(item)[index + 2]}
                         onChange={handleChange}
                         name="email"
                       />
@@ -228,7 +243,7 @@ export default function CustomizedTables() {
                     <StyledTableCell component="th" scope="row" align="center">
                       <TextField
                         id="standard-basic"
-                        label={Object.keys(item)[index + 2]}
+                        label={Object.keys(item)[index + 3]}
                         onChange={handleChange}
                         name="address"
                       />
@@ -236,11 +251,12 @@ export default function CustomizedTables() {
                     <StyledTableCell component="th" scope="row" align="center">
                       <TextField
                         id="standard-basic"
-                        label={Object.keys(item)[index + 3]}
+                        label={Object.keys(item)[index + 4]}
                         onChange={handleChange}
                         name="contact"
                       />
                     </StyledTableCell>
+                    
                     <StyledTableCell component="th" scope="row" align="center">
                       <Button variant="contained" onClick={handlePost}>
                         Post
