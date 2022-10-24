@@ -12,6 +12,9 @@ import { Button, Grid, TextField, Typography } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CreateIcon from "@material-ui/icons/Create";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addUser, deleteUser } from "../redux/reducer";
+import BasicModal from "../components/Modal";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -38,62 +41,22 @@ const useStyles = makeStyles({
   },
 });
 
-const data = [
-  {
-    id: 1,
-    name: "Adam",
-    email: "adam@gmail.com",
-    address: "Pakistan",
-    contact: 2134122,
-  },
-  {
-    id: 2,
-    name: "Jane",
-    email: "jane@gmail.com",
-    address: "United Kindom",
-    contact: 3472312,
-  },
-  {
-    id: 3,
-    name: "Tommy",
-    email: "tommy@gmail.com",
-    address: "India",
-    contact: 6797432,
-  },
-  {
-    id: 4,
-    name: "Ali",
-    email: "ali@gmail.com",
-    address: "USA",
-    contact: 2473444,
-  },
-  {
-    id: 5,
-    name: "Prakash",
-    email: "prakash@gmail.com",
-    address: "Bangladesh",
-    contact: 9327843,
-  },
-];
 export default function CustomizedTables() {
-  const [editData, setEditData] = useState({
+  const users = useSelector((state) => state.users);
+
+  const dispatch = useDispatch();
+
+const [editData, setEditData] = useState({
     id: "",
     name: "",
     email: "",
     address: "",
     contact: "",
   });
-  const [newData, setNewData] = useState(data);
-  const [showTextField, setShowTextField] = useState(false);
 
-  const [addInput, setAddInput] = useState([
-    // {
-    //   name: "",
-    //   email: "",
-    //   address: "",
-    //   contact: "",
-    // },
-  ]);
+  const [showTextField, setShowTextField] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [addInput, setAddInput] = useState([]);
 
   const classes = useStyles();
 
@@ -109,46 +72,36 @@ export default function CustomizedTables() {
       },
     ]);
   };
-  console.log("addInput", addInput);
-  const handleChange = (e) => {
+
+const handleChange = (e) => {
     setEditData({
       ...editData,
       [e.target.name]: e.target.value,
     });
   };
   const handlePost = () => {
-    //  data.push(editData)
-    setNewData((current) => [...current, editData]);
+    dispatch(
+      addUser({
+        id: editData.id,
+        name: editData.name,
+        email: editData.email,
+        address: editData.address,
+        contact: editData.contact,
+      })
+    );
+    // setNewData((current) => [...current, editData]);
   };
 
-  const handleDelete = (e) => {
-    const del = newData.filter((item) => item.id !== e.id);
-    // console.log("del", del);
-    setNewData(del);
-    // setNewData((current) =>
-    //   current.filter((user) => {
-    //     return user.id !== 3;
-    //   })
-    // );
-    // console.log("delete :>> ", del);
+  const handleDelete = (id) => {
+    dispatch(deleteUser({ id }));
+    // const del = users.filter((item) => item.id !== e.id);
+    // users(del);
   };
 
-  const handleEdit = (e) => {
-    const edit = newData.filter((item) => item.id !== e.id);
-    console.log("edit :>> ", edit);
-    // setNewData(edit);
-
-    // setShowTextField(true);
-    // setAddInput([
-    //   {
-    //     name: "",
-    //     email: "",
-    //     address: "",
-    //     contact: "",
-    //   },
-    // ]);
-  };
+  console.log("first", open);
   return (
+    <>
+      <BasicModal open={open} setOpen={setOpen} />
     <Drawer>
       <Grid container rowSpacing={5}>
         <Grid item xs={12}>
@@ -173,7 +126,7 @@ export default function CustomizedTables() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {newData.map((row) => (
+            {users.map((row) => (
               <StyledTableRow key={row.id}>
                 <StyledTableCell component="th" scope="row">
                   {row.id}
@@ -189,7 +142,7 @@ export default function CustomizedTables() {
                     variant="container"
                     style={{ backgroundColor: "yellow", marginRight: "8px" }}
                     size="small"
-                    onClick={handleEdit(row)}
+                    onClick={() => setOpen(true)}
                   >
                     <CreateIcon />
                     Edit
@@ -198,8 +151,7 @@ export default function CustomizedTables() {
                     color="secondary"
                     variant="contained"
                     size="small"
-                    onClick={() => handleDelete(row)}
-                  >
+                    onClick={() => handleDelete(row.id)}>
                     <DeleteIcon />
                     Delete
                   </Button>
@@ -221,7 +173,6 @@ export default function CustomizedTables() {
                         label={Object.keys(item)[index]}
                         onChange={handleChange}
                         name="id"
-                        
                       />
                     </StyledTableCell>
                     <StyledTableCell component="th" scope="row">
@@ -256,7 +207,7 @@ export default function CustomizedTables() {
                         name="contact"
                       />
                     </StyledTableCell>
-                    
+
                     <StyledTableCell component="th" scope="row" align="center">
                       <Button variant="contained" onClick={handlePost}>
                         Post
@@ -269,5 +220,6 @@ export default function CustomizedTables() {
         </Table>
       </TableContainer>
     </Drawer>
+    </>
   );
 }
