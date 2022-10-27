@@ -42,11 +42,11 @@ const useStyles = makeStyles({
 });
 
 export default function CustomizedTables() {
+  const [id, setId] = useState("");
   const users = useSelector((state) => state.users);
-
   const dispatch = useDispatch();
 
-const [editData, setEditData] = useState({
+  const [editData, setEditData] = useState({
     id: "",
     name: "",
     email: "",
@@ -73,7 +73,7 @@ const [editData, setEditData] = useState({
     ]);
   };
 
-const handleChange = (e) => {
+  const handleChange = (e) => {
     setEditData({
       ...editData,
       [e.target.name]: e.target.value,
@@ -94,132 +94,161 @@ const handleChange = (e) => {
 
   const handleDelete = (id) => {
     dispatch(deleteUser({ id }));
-    // const del = users.filter((item) => item.id !== e.id);
-    // users(del);
   };
+  const handleEdit = (e) => {
+    setOpen(true);
 
-  console.log("first", open);
+    console.log("id value", e.currentTarget.id);
+    setId(e.currentTarget.id);
+  };
+  // console.log("first", open);
   return (
     <>
-      <BasicModal open={open} setOpen={setOpen} />
-    <Drawer>
-      <Grid container rowSpacing={5}>
-        <Grid item xs={12}>
-          <Typography variant="h3">Users</Typography>
+      <BasicModal open={open} id={id} setOpen={setOpen} users={users} />
+      <Drawer>
+        <Grid container rowSpacing={5}>
+          <Grid item xs={12}>
+            <Typography variant="h3">Users</Typography>
+          </Grid>
         </Grid>
-      </Grid>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell>ID</StyledTableCell>
-              <StyledTableCell>Name</StyledTableCell>
-              <StyledTableCell align="center">Email</StyledTableCell>
-              <StyledTableCell align="center">Address</StyledTableCell>
-              <StyledTableCell align="center">Contact</StyledTableCell>
-              <StyledTableCell align="center">Action</StyledTableCell>
-              <StyledTableCell align="center">
-                <Button variant="contained" onClick={handleAddClick}>
-                  Add User
-                </Button>
-              </StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((row) => (
-              <StyledTableRow key={row.id}>
-                <StyledTableCell component="th" scope="row">
-                  {row.id}
-                </StyledTableCell>
-                <StyledTableCell component="th" scope="row">
-                  {row.name}
-                </StyledTableCell>
-                <StyledTableCell align="center">{row.email}</StyledTableCell>
-                <StyledTableCell align="center">{row.address}</StyledTableCell>
-                <StyledTableCell align="center">{row.contact}</StyledTableCell>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="customized table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell>ID</StyledTableCell>
+                <StyledTableCell>Name</StyledTableCell>
+                <StyledTableCell align="center">Email</StyledTableCell>
+                <StyledTableCell align="center">Address</StyledTableCell>
+                <StyledTableCell align="center">Contact</StyledTableCell>
+                <StyledTableCell align="center">Action</StyledTableCell>
                 <StyledTableCell align="center">
-                  <Button
-                    variant="container"
-                    style={{ backgroundColor: "yellow", marginRight: "8px" }}
-                    size="small"
-                    onClick={() => setOpen(true)}
-                  >
-                    <CreateIcon />
-                    Edit
-                  </Button>
-                  <Button
-                    color="secondary"
-                    variant="contained"
-                    size="small"
-                    onClick={() => handleDelete(row.id)}>
-                    <DeleteIcon />
-                    Delete
+                  <Button variant="contained" onClick={handleAddClick}>
+                    Add User
                   </Button>
                 </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="customized table">
-          <TableBody>
-            {showTextField === true
-              ? addInput.map((item, index) => (
-                  <StyledTableRow key={item.id}>
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <TextField
-                        id="standard-basic"
-                        label={Object.keys(item)[index]}
-                        onChange={handleChange}
-                        name="id"
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row">
-                      <TextField
-                        id="standard-basic"
-                        label={Object.keys(item)[index + 1]}
-                        onChange={handleChange}
-                        name="name"
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <TextField
-                        id="standard-basic"
-                        label={Object.keys(item)[index + 2]}
-                        onChange={handleChange}
-                        name="email"
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <TextField
-                        id="standard-basic"
-                        label={Object.keys(item)[index + 3]}
-                        onChange={handleChange}
-                        name="address"
-                      />
-                    </StyledTableCell>
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <TextField
-                        id="standard-basic"
-                        label={Object.keys(item)[index + 4]}
-                        onChange={handleChange}
-                        name="contact"
-                      />
-                    </StyledTableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((row) => (
+                <StyledTableRow key={row.id}>
+                  <StyledTableCell component="th" scope="row">
+                    {row.id}
+                  </StyledTableCell>
+                  <StyledTableCell component="th" scope="row">
+                    {row.name}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">{row.email}</StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.address}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.contact}
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Button
+                      variant="container"
+                      style={{ backgroundColor: "yellow", marginRight: "8px" }}
+                      size="small"
+                      onClick={handleEdit}
+                      id={row.id}
+                    >
+                      <CreateIcon />
+                      Edit
+                    </Button>
+                    <Button
+                      color="secondary"
+                      variant="contained"
+                      size="small"
+                      onClick={() => handleDelete(row.id)}
+                    >
+                      <DeleteIcon />
+                      Delete
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TableContainer component={Paper}>
+          <Table className={classes.table} aria-label="customized table">
+            <TableBody>
+              {showTextField === true
+                ? addInput.map((item, index) => (
+                    <StyledTableRow key={item.id}>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <TextField
+                          id="standard-basic"
+                          label={Object.keys(item)[index]}
+                          onChange={handleChange}
+                          name="id"
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell component="th" scope="row">
+                        <TextField
+                          id="standard-basic"
+                          label={Object.keys(item)[index + 1]}
+                          onChange={handleChange}
+                          name="name"
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <TextField
+                          id="standard-basic"
+                          label={Object.keys(item)[index + 2]}
+                          onChange={handleChange}
+                          name="email"
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <TextField
+                          id="standard-basic"
+                          label={Object.keys(item)[index + 3]}
+                          onChange={handleChange}
+                          name="address"
+                        />
+                      </StyledTableCell>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <TextField
+                          id="standard-basic"
+                          label={Object.keys(item)[index + 4]}
+                          onChange={handleChange}
+                          name="contact"
+                        />
+                      </StyledTableCell>
 
-                    <StyledTableCell component="th" scope="row" align="center">
-                      <Button variant="contained" onClick={handlePost}>
-                        Post
-                      </Button>
-                    </StyledTableCell>
-                  </StyledTableRow>
-                ))
-              : ""}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Drawer>
+                      <StyledTableCell
+                        component="th"
+                        scope="row"
+                        align="center"
+                      >
+                        <Button variant="contained" onClick={handlePost}>
+                          Post
+                        </Button>
+                      </StyledTableCell>
+                    </StyledTableRow>
+                  ))
+                : ""}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Drawer>
     </>
   );
 }
