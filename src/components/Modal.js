@@ -6,9 +6,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import updateUser from "../redux/reducer/index";
+import { updateUser } from "../redux/reducer";
 import { useDispatch, useSelector } from "react-redux";
-
+import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
 const style = {
   position: "absolute",
   backgroundColor: "white",
@@ -23,17 +24,29 @@ const style = {
 };
 
 export default function BasicModal(props) {
-  const [editData, setEditData] = React.useState({
-    // id: user.id,
-    // name: user.name,
-    // email: user.email,
-    // address: user.address,
-    // contact: user.contact,
+  const id = props.id;
+
+  console.log("existing user name", name);
+  const [editData, setEditData] = useState({
+    name: "",
+    email: "",
+    address: "",
+    contact: "",
   });
-  const user = useSelector((state) =>
-    state.users.find((user) => user.id === editData.id)
-  );
-  // const user = useSelector((state)=> state.users)
+  let user = useSelector((store) => store.users);
+  let name = "";
+  let email = "";
+  let address = "";
+  let contact = "";
+  useEffect(() => {
+    const existingUser = user.filter((item) => item.id == id);
+    name = existingUser.map((item) => item.name).toString();
+    email = existingUser.map((item) => item.email).toString();
+    address = existingUser.map((item) => item.address).toString();
+    contact = existingUser.map((item) => item.contact).toString();
+    setEditData({ ...editData, name, email, address, contact });
+  }, [props]);
+
   const dispatch = useDispatch();
   const handleChange = (e) => {
     setEditData({
@@ -41,17 +54,19 @@ export default function BasicModal(props) {
       [e.target.name]: e.target.value,
     });
   };
-  // console.log("data:", editData);
+
   const editSubmit = () => {
-    dispatch(
-      updateUser({
-        // id,
-        // name,
-        // email,
-        // address,
-        // contact,
-      })
-    );
+    console.log("name", name, email, address);
+    if (
+      editData.name &&
+      editData.email &&
+      editData.address &&
+      editData.contact
+    ) {
+      dispatch(updateUser({ ...editData, id: id }));
+    } else {
+      console.log("error please input fields");
+    }
   };
   return (
     <div>
@@ -73,40 +88,39 @@ export default function BasicModal(props) {
             </Typography>
             <TextField
               id="outlined-basic"
-              label="ID"
-              variant="outlined"
-              onClick={handleChange}
-              name="id"
-            />
-            <TextField
-              id="outlined-basic"
               label="Name"
               variant="outlined"
-              onClick={handleChange}
+              onChange={handleChange}
               name="name"
+              value={editData.name}
             />
             <TextField
               id="outlined-basic"
               label="Email"
               variant="outlined"
-              onClick={handleChange}
+              onChange={handleChange}
               name="email"
+              value={editData.email}
             />
             <TextField
               id="outlined-basic"
               label="Address"
               variant="outlined"
-              onClick={handleChange}
+              onChange={handleChange}
               name="address"
+              value={editData.address}
             />
             <TextField
               id="outlined-basic"
               label="Contact"
               variant="outlined"
-              onClick={handleChange}
+              onChange={handleChange}
               name="contact"
+              value={editData.contact}
             />
-            <Button variant="contained" onClick={editSubmit}>Submit</Button>
+            <Button variant="contained" onClick={editSubmit}>
+              Submit
+            </Button>
           </Stack>
         </Box>
       </Modal>
