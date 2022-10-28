@@ -64,6 +64,7 @@ export default function BasicModal(props) {
       editData.contact
     ) {
       dispatch(updateUser({ ...editData, id: id }));
+      props.setOpen(false)
     } else {
       console.log("error please input fields");
     }
