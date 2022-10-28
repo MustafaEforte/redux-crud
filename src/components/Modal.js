@@ -1,5 +1,4 @@
 import * as React from "react";
-// import { TextField } from "@material-ui/core";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
@@ -8,7 +7,6 @@ import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { updateUser } from "../redux/reducer";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 const style = {
   position: "absolute",
@@ -25,8 +23,6 @@ const style = {
 
 export default function BasicModal(props) {
   const id = props.id;
-
-  console.log("existing user name", name);
   const [editData, setEditData] = useState({
     name: "",
     email: "",
